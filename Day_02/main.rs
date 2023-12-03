@@ -52,7 +52,8 @@ fn part2(filepath : String){
 
 fn main(){
     let filepath = String::from("data.txt");
-    println!("--- Day 2: Cube Conundrum ---");
+    println!("--- Day 2: Cube Conundrum ---\n\n");
     part1(filepath.clone());
     part2(filepath.clone());
+    println!("\n\n-------------------------");
 }
