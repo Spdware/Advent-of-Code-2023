@@ -134,7 +134,7 @@ fn part2(strings:Vec<&str>){
 
 
 fn main() {
-    let file =fs::read_to_string("path/to/file"
+    let file =fs::read_to_string("src/data.txt"
     .to_string())
     .expect("File not found");
     let strings:Vec<&str>=file.split("\n").collect();
