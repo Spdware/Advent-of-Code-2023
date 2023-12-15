@@ -28,6 +28,24 @@ fn calculate_lens_result(lens_slot:HashMap<u32,Vec<(&str,u32)>>)->u32{
     lens_result
 }
 
+fn adding<'a>(mut tmp_hash:Vec<(&'a str,u32)>, entry:Vec<&'a str>)->Vec<(&'a str,u32)> {
+    if let Some(tuple) = tmp_hash.iter().find(|&&(v, _)| v == entry[0]) {
+        let index=tmp_hash.iter().position(|&value| value == *tuple).unwrap();
+        tmp_hash.remove(index);
+        tmp_hash.insert(index,(entry[0],entry[1].to_string().parse::<u32>().unwrap()));
+    }else{
+        tmp_hash.push((entry[0],entry[1].to_string().parse::<u32>().unwrap()));
+    }
+    return tmp_hash;
+}
+
+fn removing<'a>(mut tmp_hash:Vec<(&'a str,u32)>, entry:Vec<&'a str>)->Vec<(&'a str,u32)> {
+    if let Some(tuple) = tmp_hash.iter().find(|&&(v, _)| v == entry[0]) {
+        tmp_hash.remove(tmp_hash.iter().position(|&value| value == *tuple).unwrap());
+    }
+    return tmp_hash;
+}
+
 fn part2(strings:Vec<&str>)->u32 {
     let mut lens_slots:HashMap<u32,Vec<(&str,u32)>>=HashMap::new();
     for i in 0..256{lens_slots.insert(i as u32,Vec::new());}
@@ -45,22 +63,10 @@ fn part2(strings:Vec<&str>)->u32 {
         let hash=hash_algorithm(entry[0]);
         match operation{
             '='=>{
-                let mut tmp_hash:Vec<(&str,u32)>= lens_slots.get(&hash).unwrap().clone();
-                if let Some(tuple) = tmp_hash.iter().find(|&&(v, _)| v == entry[0]) {
-                    let index=tmp_hash.iter().position(|&value| value == *tuple).unwrap();
-                    tmp_hash.remove(index);
-                    tmp_hash.insert(index,(entry[0],entry[1].to_string().parse::<u32>().unwrap()));
-                }else{
-                    tmp_hash.push((entry[0],entry[1].to_string().parse::<u32>().unwrap()));
-                }
-                lens_slots.insert(hash,tmp_hash);
+                lens_slots.insert(hash,adding(lens_slots.get(&hash).unwrap().clone(),entry));
             },
             '-'=>{
-                let mut tmp_hash:Vec<(&str,u32)>= lens_slots.get(&hash).unwrap().clone();
-                if let Some(tuple) = tmp_hash.iter().find(|&&(v, _)| v == entry[0]) {
-                    tmp_hash.remove(tmp_hash.iter().position(|&value| value == *tuple).unwrap());
-                    lens_slots.insert(hash,tmp_hash);
-                }
+                lens_slots.insert(hash,removing(lens_slots.get(&hash).unwrap().clone(),entry));
             },
             _=>{},
         }
